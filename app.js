@@ -14,6 +14,8 @@ const txtSearch = document.getElementById("txtSearch");
 const ddlSort = document.getElementById("ddlSort");
 const ddlSortOrder = document.getElementById("ddlSortOrder");
 let isOpenedState = false;
+const itemsPerPage = 10; 
+let currentPage = 1;
 
 const showErrorMessage = (msg) => {
   swal("Warning", msg, "warning");
@@ -325,6 +327,11 @@ const showEditRow = (e) => {
 };
 
 const revertDeletedRow = (e) => {
+  if (isOpenedState) {
+    showErrorMessage("The last changes are not completed");
+    return;
+  }
+
   let tr = e.target.closest("tr");
   let id = parseInt(tr.cells[2].children[0].textContent);
   let existingRow = fakeData[0].mainData.find((x) => x.id == id);
@@ -553,10 +560,58 @@ const clearTableBeforeRender = () => {
 
 const renderTable = (datas) => {
   clearTableBeforeRender();
-  datas.forEach((data) => {
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  datas.slice(startIndex, endIndex).forEach((data) => {
     const tr = generateTr(data);
     tBody.appendChild(tr);
   });
+
+  renderPagination(datas.length);
+};
+
+const renderPagination = (totalItems) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const paginationContainer = document.getElementById("pagination");
+
+  let paginationHTML = `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+    <a class="page-link" href="#" tabindex="-1" data-page="prev">Previous</a>
+  </li>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHTML += `<li class="page-item ${currentPage === i ? 'active' : ''}">
+      <a class="page-link" href="#" data-page="${i}">${i}</a>
+    </li>`;
+  }
+
+  paginationHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+    <a class="page-link" href="#" data-page="next">Next</a>
+  </li>`;
+
+  paginationContainer.innerHTML = paginationHTML;
+
+  const paginationLinks = paginationContainer.querySelectorAll("a.page-link");
+  paginationLinks.forEach((link) => {
+    link.addEventListener("click", handlePaginationClick);
+  });
+};
+
+const handlePaginationClick = (e) => {
+  e.preventDefault();
+
+  const targetPage = e.target.getAttribute("data-page");
+
+  if (targetPage === "prev" && currentPage > 1) {
+    currentPage -= 1;
+  } else if (targetPage === "next" && currentPage < Math.ceil(fakeData[0].mainData.length / itemsPerPage)) {
+    currentPage += 1;
+  } else if (!isNaN(targetPage)) {
+    currentPage = parseInt(targetPage);
+  }
+
+  renderTable(fakeData[0].mainData);
 };
 
 const showNewRow = () => {
@@ -637,8 +692,9 @@ const addEventListeners = () => {
 
 const initPage = () => {
   addEventListeners();
-  renderTable(fakeData[0].mainData);
   generateAllSelects();
+  renderTable(fakeData[0].mainData);
+  renderPagination(fakeData[0].mainData.length);
 };
 
 document.addEventListener("DOMContentLoaded", initPage);
