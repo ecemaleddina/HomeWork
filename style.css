@@ -21,3 +21,27 @@ i:hover{
     text-decoration: line-through;
     font-style: italic;
 }
+
+.pagination{
+    display: flex;
+    gap: 0.6rem;
+}
+
+.page-anchor{
+    color: #aaaaaa;
+    text-decoration: none;
+    padding: 10px;
+    transition: all 0.4s;
+}
+
+.page-anchor:hover{
+    background-color: #eaeaea;
+    border-radius: 5px;
+}
+
+.active .page-anchor{
+    background-color: #3399ff;
+    border-radius: 50%;
+    padding: 7px 11px;
+    color: #fff;
+}

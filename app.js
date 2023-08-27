@@ -576,23 +576,23 @@ const renderPagination = (totalItems) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const paginationContainer = document.getElementById("pagination");
 
-  let paginationHTML = `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-    <a class="page-link" href="#" tabindex="-1" data-page="prev">Previous</a>
+  let paginationHTML = `<li class="page-elem ${currentPage === 1 ? 'disabled' : ''}">
+    <a class="page-anchor" href="#" tabindex="-1" data-page="prev">Previous</a>
   </li>`;
 
   for (let i = 1; i <= totalPages; i++) {
-    paginationHTML += `<li class="page-item ${currentPage === i ? 'active' : ''}">
-      <a class="page-link" href="#" data-page="${i}">${i}</a>
+    paginationHTML += `<li class="page-elem ${currentPage === i ? 'active' : ''}">
+      <a class="page-anchor" href="#" data-page="${i}">${i}</a>
     </li>`;
   }
 
-  paginationHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-    <a class="page-link" href="#" data-page="next">Next</a>
+  paginationHTML += `<li class="page-elem ${currentPage === totalPages ? 'disabled' : ''}">
+    <a class="page-anchor" href="#" data-page="next">Next</a>
   </li>`;
 
   paginationContainer.innerHTML = paginationHTML;
 
-  const paginationLinks = paginationContainer.querySelectorAll("a.page-link");
+  const paginationLinks = paginationContainer.querySelectorAll("a.page-anchor");
   paginationLinks.forEach((link) => {
     link.addEventListener("click", handlePaginationClick);
   });
