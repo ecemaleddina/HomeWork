@@ -176,6 +176,7 @@ const tryConvertModelForNewRow = () => {
 
   return {
     data: {
+      isDeletedState: false,
       id: id,
       firstName: firstName,
       lastName: lastName,
@@ -204,7 +205,7 @@ const clearNewRow = () => {
 const saveNewRow = () => {
   const rowForPush = tryConvertModelForNewRow();
   if (rowForPush.success) {
-    fakeData[0].mainData.push(rowForPush);
+    fakeData[0].mainData.push(rowForPush.data);
     hideNewRow();
     clearNewRow();
     renderTable(fakeData[0].mainData);
